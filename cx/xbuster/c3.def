@@ -1,0 +1,16 @@
+; X-Buster Charge Shot 3
+; ripped from sprite viewer (X3 prototype)
+; sz = 64x64 , center_pos = 32,32
+; clsn = -16,-16,16,16,
+total = 10
+
+;;;;;;;;;;;;;;;;
+; 2-2-2-2 loop
+frame.6 = 32,32,
+frame.7 = 32,32,
+frame.8 = 32,32,
+frame.9 = 32,32,
+anim.0 = 6-1,7-1,8-1,9-1,
+clsn.0 = -16,-16,16,16,
+anim.6 = 6-1,7-1,8-1,9-1,
+clsn.6 = -16,-16,16,16,

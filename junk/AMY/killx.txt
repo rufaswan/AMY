@@ -1,0 +1,104 @@
+/*
+
+enum InputKeys {
+	DIR_UP,  DIR_DOWN, DIR_LEFT, DIR_RIGHT,
+	KEY_RED, KEY_BLUE, KEY_PINK, KEY_GREEN, KEY_YELLOW,
+	KEY_CROSS, KEY_SQUARE, KEY_CIRCLE, KEY_DIAMOND, KEY_TRIANGLE,
+	KEY_A, KEY_B, KEY_C, KEY_D, KEY_X, KEY_Y, KEY_Z,
+	KEY_1, KEY_2, KEY_3,
+	KEY_I, KEY_II, KEY_III,
+	KEY_L, KEY_L1, KEY_L2,
+	KEY_R, KEY_R1, KEY_R2,
+	KEY_C_UP, KEY_C_DOWN, KEY_C_LEFT, KEY_C_RIGHT,
+	STK_L3, STK_L3_UP, STK_L3_DOWN, STK_L3_LEFT, STK_L3_RIGHT,
+	STK_R3, STK_R3_UP, STK_R3_DOWN, STK_R3_LEFT, STK_R3_RIGHT,
+	BTN_START, BTN_SELECT, BTN_MODE, BTN_HOME, BTN_PAUSE
+}
+
+void reg_kb_snes(
+	char* UP,  char* DOWN, char* LEFT, char* RIGHT,
+	char* K_A, char* K_B,  char* K_X,  char* K_Y,
+	char* K_L, char* K_R,
+	char* START, char* SELECT)
+{
+	kb_map_clear();
+	set_kb_map(DIR_UP,    UP);
+	set_kb_map(DIR_DOWN,  DOWN);
+	set_kb_map(DIR_LEFT,  LEFT);
+	set_kb_map(DIR_RIGHT, RIGHT);
+	set_kb_map(KEY_A, K_A);
+	set_kb_map(KEY_B, K_B);
+	set_kb_map(KEY_X, K_X);
+	set_kb_map(KEY_Y, K_Y);
+	set_kb_map(KEY_L, K_L);
+	set_kb_map(KEY_R, K_R);
+	set_kb_map(BTN_START,  START);
+	set_kb_map(BTN_SELECT, SELECT);
+}
+void set_kb_map( InputKeys in, char* key )
+{
+	sfkey*  sfkey = get_sfkey( key );
+
+	kbmap::iterator it = kbmap.find(in);
+	if ( it != kbmap.end() )
+		kbmap[ in ]->set( sfkey );
+	else
+		kbmap[ in ] = new gamekey( sfkey );
+}
+void kb_map_clear()
+{
+	kbmap::iterator it;
+	for ( it = kbmap.begin(); it != kbmap.end(); ++it )
+		delete it->second;
+		kbmap.erase(it);
+}
+sf::Keyboard  get_sfkey( char* key )
+{
+	std::string  str = strtolower(key);
+	if      ( key == "num0" )  return sf::Keyboard::Num0;
+	else if ( key == "a" )     return sf::Keyboard::A;
+	else                       return -1;
+}
+
+ */
+
+void thread_inter_wrapper( amy::Interface* inter )
+{
+	while ( inter->display.is_open )
+	{
+		inter->input.tick( inter->display );
+		inter->display.draw();
+	}
+}
+
+int main()
+{
+	sf::Mutex  mutex;
+
+	amy::Interface* inter = new amy::Interface;
+		inter->display.create( 256, 256, "Kill X Project", 200 );
+		inter->input.reg_kb_snes('U', 'D', 'L', 'R', 'x', 'z', 'c', 'v', 's', 'd', 'S', ' ');
+		inter->input.next();
+
+		sf::Thread th_interface( &thread_inter_wrapper, inter );
+			th_interface.launch();
+
+	// if ( fopen("config.dat", "r") )
+	//   config.parse_config("config.dat");
+	//   config.reg_kb( "snes", inter->input );
+
+	uint rest = 1000 / 24;
+	while ( inter->display.is_open )
+	{
+		mutex.lock();
+
+			inter->input.events( inter );
+			inter->input.next();
+
+		mutex.unlock();
+		rfs::mysleep( rest );
+	}
+
+
+	return 0;
+}

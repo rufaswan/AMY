@@ -1,0 +1,29 @@
+# setup
+	git config --global user.name "Rufas Wan"
+	git config --global user.email rufaswan@gmail.com
+	git config --global core.pager    less
+	git config --global core.autocrlf false
+	git config --global color.ui true
+	git config --global alias.unstage 'reset HEAD --'
+	git config --global alias.last    'log -1 HEAD'
+
+# init project
+	git init
+
+# working with project
+	# add everything on the current working directory
+	git add .
+
+	# remove everything that is deleted from current project
+	git rm $(git ls-files --deleted)
+
+	# cleanup
+	git gc --aggressive --prune=now
+
+	# commit log
+	git commit -m "my git commit"
+
+# git info
+	git status
+	git log
+	git remote -v

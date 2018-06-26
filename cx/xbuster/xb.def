@@ -1,0 +1,7 @@
+; uncharged x-buster
+; sz = 16x16
+total = 1
+
+frame.0 = 8,8,
+anim.0 = 0-255,
+clsn.0 = -4,-4,4,4,

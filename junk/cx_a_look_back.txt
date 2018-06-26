@@ -1,0 +1,56 @@
+A planned Megaman X / Rockman X clone game, written in C++ with SFML 2.4.2 library.
+
+Finally look somewhat decent! Comparing this to 5 years ago... we are getting there:
+https://www.youtube.com/watch?v=soI5yvCiueM
+
+
+
+What changed (and what I learned) between ver 2013 and ver 2018 (now)
+
+- On 2013, I set walls by tiles. So tile 1 to 128 are wall tiles, 129 to 142 are slope tiles, 160 to 250 are event tiles (checkpoints, scroll locks...), etc.
+- Now, I seperated them. The collusion tileset is independant over background tileset. This means I can design the stage layout first and then reskin it by adding background (and foreground) layer later.
+(It is inspired by the prototype/debug stages discovered on The Cutting Room Floor [tcrf.net])
+
+
+- On 2013, the tileset is added programically by left-to-right, top-to-bottom. Which ends up a pain to maintain, since adding more tiles (or regrouping them) will change the tile numbering.
+- Now, I use a .DEF file to keep track the location every tile. I can keep updating my tileset without worrying breaking my level. As a bonus, now I can animate them too.
+(It is inspired by .AIR file by M.U.G.E.N.)
+
+
+- On 2013, I have all the sprites on a one big image that is also added programically by left-to-right, top-to-bottom. Yet another nightmare.
+- Now, like the tileset above, I have a .DEF file to keep track. In fact, every sprites is its own image file now. Gone with those days where all the sprites are 64x64 and then suddenly when one of them doesn't fit and you'll need to readjust every sprite to 72x72
+(It is inspired by Fighter Factory, a M.U.G.E.N. character editing tool)
+
+
+- On 2013, I use Tiled Map Editor to edit my stage. But Tiled is not a very suitable for platformer, it is more for RPG. For example, Tiled won't tell you if you have enough tiles for a room/screen, you'll have to count them manually. And Tiled uses its own tile numbering when adding tileset doesn't help either.
+- Considering Rockbot, SuperTux, VVVVVV has its own level editor, I create one myself. Now, I have my own level editor too. :P
+
+
+- On 2013, my map file is converted from Tiled .TMX file to binary file.
+- Now, my map file is just a .LVL text files. Much easier to expand and debug.
+(it is inspired by Star Pusher (pygame) by Al Sweigart)
+
+
+- On 2013, the screen is 16x16 tiles with a tile is 16x16 pixels, hence the screen is 256x256 pixels.
+- Now, the screen is 14x14 tiles or 224x224 pixels. Extra 16 pixels on the top/bottom/left/right of the screen is to preload entities and events (pits...).
+(It is inspired by BG Planning Sheet by Super Mario Maker)
+
+
+- On 2013, all my character animation data is inside the character class, as an int[]. It become messy when you need to know which last frame is loop over or remain unchanged.
+- Now, all animation data is at its own class, updated by change_state() and keep tracked by frame_id and time, with time over 99 = infinite/locked.
+(It is inspired by .XTAL files from Rosenkreuzstilette Freudenstachel)
+
+
+- On 2013, I over-designed the engine by making tons of abstract classes for many features I wish to implement in the future (e.g. demo play, save/load replay, hoduken, command dash, GAMEPACK.DAT uncompress/unencypt...). Considering I couldn't make the game work properly to begin with, this fails epicly.
+- Now, I just concentrate on making the game runs. Other features may or may not be implement later. We'll see.
+
+
+- On 2013, I have no idea on how to implement in-game cutscenes, not even with all those abstract classes. To test the idea, I made even more abstract classes, and the whole source code messiness become even worst.
+- Now, I treat them just like opening an in-game menu, or activating a text dialog box. It runs its own loop with pre-existing objects/entities.
+(It is indirectly inspired by the QUEST files of Phantasy Star Online for PC)
+
+
+- On 2013, the game runs at 60 FPS (Frames-Per-Second), with horrible animation.
+- Now, the game runs at 24 FPS, with more acceptable animation.
+(It is inspired by The X-Sheet or dope sheet by Animator's Survival Kit
+by Richard William, Director of Animation "Who Framed Roger Rabbit")

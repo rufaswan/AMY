@@ -1,0 +1,22 @@
+; tile = 16x16 pixels
+; map  = 16x16 tiles
+cam.x = 0
+cam.y = 0
+map.w = 32
+map.h = 16
+
+col.img = res-plats-16.png
+col.1  =   0,  0, 16, 16, ; wall
+
+bg.img = castle-platformer/twilight_tiles.png
+bg.1 =  24, 64, 64,112, ; pillar
+bg.2 =   8,  0, 32, 16, ; bridge / pillar loop
+bg.3 =   0,  0, 48, 16, ; bridge / standalone
+bg.4 = 112,  0, 48, 48, ; 3x3 block outdoor
+bg.5 = 112, 96, 48, 48, ; 3x3 block indoor
+bg.6 = 160, 48, 16, 16, ; 1x1 block outdoor
+bg.7 = 160,144, 16, 16, ; 1x1 block indoor
+
+obj.img = res-tiles-16.png
+obj.1  =  32,  0, 16, 16, ; bat
+obj.2  =  64,  0, 16, 16, ; elisa

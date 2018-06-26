@@ -1,0 +1,44 @@
+# Deny  All , Allow Known (Whitelist)
+# Allow All , Deny  Known (Blacklist)
+
+# This is a whitelist
+
+*
+!.gitattributes
+!.gitignore
+!*/
+
+!*.c
+!*.h
+!*.cpp
+!*.hpp
+!*.cs
+!*.php
+!*.py
+!*.css
+!*.html
+!*.xml
+!*.rb
+!*.pl
+!*.go
+!*.java
+
+!*.sh
+!*.bat
+
+!*.js
+!*.json
+!*.lua
+
+!*.txt
+!*.ini
+!*.conf
+!*.md
+!*.def
+!*.cfg
+
+!*.lvl
+!*.inc
+!*.ttf
+!*.png
+!*.ogg

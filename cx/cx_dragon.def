@@ -1,0 +1,308 @@
+; ABCDE <- C e1 move R
+;   HGF <- H e2 ram
+;  JI
+;  K
+;  LM   <- N e3 ram , floor explode
+;   N   <- locks
+;   O
+;   P   <- R e4 ram L
+;   Q
+;   R
+;   S
+;   T
+;   U
+;   V   <- locks
+;   W
+;   XYZ
+cam.x = 0
+cam.y = 0
+map.w = 80
+map.h = 256
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+col.img = res-plats-16.png
+col.1  =   0,  0,16,16, ; wall
+col.2  =  16,  0,16,16, ; spike
+col.3  =  32,  0,16,16, ; pit
+col.4  =  48,  0,16,16, ; scroll lock vertical
+col.5  =  64,  0,16,16, ; scroll lock horizontal
+col.6  =  80,  0,16,16, ; room lock
+col.7  =  96,  0,16,16, ; no lock
+
+col.11 =  32, 48,16,16, ; cloud one-way up
+col.12 =  48, 48,16,16, ; cloud one-way down
+col.13 =  64, 48,16,16, ; cloud one-way left
+col.14 =  80, 48,16,16, ; cloud one-way right
+col.15 =  32, 64,16,16, ; push up
+col.16 =  48, 64,16,16, ; push down
+col.17 =  64, 64,16,16, ; push left
+col.18 =  80, 64,16,16, ; push right
+
+col.21 =   0, 16,16,16, ; event 1
+col.22 =  16, 16,16,16, ; event 2
+col.23 =  32, 16,16,16, ; event 3
+col.24 =  48, 16,16,16, ; event 4
+col.25 =  64, 16,16,16, ; event 5
+col.26 =  80, 16,16,16, ; event 6
+col.27 =  96, 16,16,16, ; event 7
+col.28 = 112, 16,16,16, ; event 8
+col.29 =   0, 32,16,16, ; event 9
+col.30 =  16, 32,16,16, ; event 0
+col.31 =  64, 32,16,16, ; checkpoint
+col.32 =  80, 32,16,16, ; event !
+col.33 =  96, 32,16,16, ; event ?
+col.34 = 112, 32,16,16, ; event X
+
+;col. =   0,  0,16,16, ; checkpoint 2
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+obj.img = cx/cx_dragon_obj_list.png
+
+obj.10 =   0, 0,16,128, ; BLOCK pushL
+obj.11 =  16, 0,16,128, ; BLOCK pushR
+obj.12 =  32, 0,16, 32, ; BLOCK inv 14x2
+obj.13 =  48, 0,16, 16, ; LASER waterL
+obj.14 =  64, 0,16, 16, ; LASER waterR
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+bg.img = cx/cx_dragon_bg.png
+
+bg.1  =   0,  0,16,16, ; wall 7
+bg.2  =  32,  0,16,16, ; wall 9
+bg.3  =   0, 64,16,16, ; wall 1
+bg.4  =  32, 64,16,16, ; wall 3
+
+bg.5  =  16,  0,16,16, ; wall 8
+bg.6  =   0, 16,16,16, ; wall 4
+bg.7  =  32, 16,16,16, ; wall 6
+bg.8  =  16, 64,16,16, ; wall 2
+
+bg.9  =  16, 16,16,16, ; wall
+
+bg.10 =   0, 32,16,16, ; wall _|
+bg.11 =   0, 48,16,16, ; wall -|
+bg.12 =  32, 32,16,16, ; wall |_
+bg.13 =  32, 48,16,16, ; wall |-
+
+bg.15 =  64,  0,16,16, ; glass 7-a
+bg.16 =  80,  0,16,16, ; glass 7-b
+bg.17 =  96,  0,16,16, ; glass 7-c
+bg.18 =  64, 16,16,16, ; glass 7-d
+bg.19 =  80, 16,16,16, ; glass 7-e
+bg.20 =  64, 32,16,16, ; glass 7-f
+
+bg.21 = 128, 32,16,16, ; glass 3-a
+bg.22 = 112, 48,16,16, ; glass 3-b
+bg.23 = 128, 48,16,16, ; glass 3-c
+bg.24 =  96, 64,16,16, ; glass 3-d
+bg.25 = 112, 64,16,16, ; glass 3-e
+bg.26 = 128, 64,16,16, ; glass 3-f
+
+bg.27 = 112,  0,16,16, ; glass 9-a
+bg.28 = 128,  0,16,16, ; glass 9-b
+bg.29 = 128, 16,16,16, ; glass 9-c
+
+bg.30 =  64, 48,16,16, ; glass 1-a
+bg.31 =  64, 64,16,16, ; glass 1-b
+bg.32 =  80, 64,16,16, ; glass 1-c
+
+bg.35 = 160, 16,16,16, ; side L-a
+bg.36 = 160, 32,16,16, ; side L-b
+
+bg.37 = 208, 16,16,16, ; side-R-a
+bg.38 = 208, 32,16,16, ; side R-b
+
+bg.39 = 176,  0,16,16, ; fence
+bg.40 = 192,  0,16,16, ; fence
+bg.41 = 176, 16,16,16, ; fence
+bg.42 = 192, 16,16,16, ; fence
+
+bg.43 = 176, 32,16,16, ; pillar
+bg.44 = 192, 32,16,16, ; pillar
+bg.45 = 176, 48,16,16, ; pillar
+bg.46 = 192, 48,16,16, ; pillar
+
+bg.50 =  80, 96,16,16, ; cover-7
+bg.51 =  96, 96,16,16, ; cover-8
+bg.52 = 112, 96,16,16, ; cover-9
+bg.53 =  80,112,16,16, ; cover-4
+bg.54 =  96,112,16,16, ; cover-5
+bg.55 = 112,112,16,16, ; cover-6
+bg.56 =  80,128,16,16, ; cover-1
+bg.57 =  96,128,16,16, ; cover-2
+bg.58 = 112,128,16,16, ; cover-3
+
+bg.60 = 160, 80,16,16, ; cracks
+bg.61 = 176, 80,16,16, ; cracks
+bg.62 = 192, 80,16,16, ; cracks
+bg.63 = 208, 80,16,16, ; cracks
+bg.64 = 160, 96,16,16, ; cracks
+bg.65 = 176, 96,16,16, ; cracks
+bg.66 = 192, 96,16,16, ; cracks
+bg.67 = 208, 96,16,16, ; cracks
+bg.68 = 160,112,16,16, ; cracks
+bg.69 = 176,112,16,16, ; cracks
+bg.70 = 192,112,16,16, ; cracks
+bg.71 = 208,112,16,16, ; cracks
+bg.72 = 160,128,16,16, ; cracks
+bg.73 = 176,128,16,16, ; cracks
+bg.74 = 192,128,16,16, ; cracks
+bg.75 = 208,128,16,16, ; cracks
+
+bg.80 =  64,160,16,16, ;
+bg.81 =  80,160,16,16, ;
+bg.82 =  96,160,16,16, ;
+;bg.83 =  64,176,16,16, ;
+;bg.84 =  80,176,16,16, ;
+;bg.85 =  96,176,16,16, ;
+;bg.86 =  64,192,16,16, ;
+;bg.87 =  80,192,16,16, ;
+;bg.88 =  96,192,16,16, ;
+
+;bg.80 = 128,160,16,16, ;
+;bg.81 = 144,160,16,16, ;
+;bg.82 = 160,160,16,16, ;
+;bg.83 = 128,176,16,16, ;
+;bg.84 = 144,176,16,16, ;
+;bg.85 = 160,176,16,16, ;
+;bg.86 = 128,192,16,16, ;
+;bg.87 = 144,192,16,16, ;
+;bg.88 = 160,192,16,16, ;
+
+;bg.89 = 192,160,16,16, ;
+;bg.90 = 208,160,16,16, ;
+;bg.91 = 224,160,16,16, ;
+;bg.92 = 192,176,16,16, ;
+;bg.93 = 208,176,16,16, ;
+;bg.94 = 224,176,16,16, ;
+;bg.95 = 192,192,16,16, ;
+;bg.96 = 208,192,16,16, ;
+;bg.97 = 224,192,16,16, ;
+
+;bg.   =    ,   ,16,16, ;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+fg.img = cx/cx_dragon_fg.png
+
+fg.11 =   0,224,16,16, ; wall 7
+fg.12 =  32,224,16,16, ; wall 9
+fg.13 =   0,256,16,16, ; wall 1
+fg.14 =  32,256,16,16, ; wall 3
+
+fg.15 =  16,224,16,16, ; wall 8
+fg.16 =   0,240,16,16, ; wall 4
+fg.17 =  32,240,16,16, ; wall 6
+fg.18 =  16,256,16,16, ; wall 2
+
+fg.19 =  16,240,16,16, ; wall
+
+fg.1  =  64,  0,16,16, ; water right-h dummy
+fg.2  =  80,  0,16,16, ; water right-h dummy
+fg.3  =  96,  0,16,16, ; water left-h dummy
+fg.4  = 112,  0,16,16, ; water left-h dummy
+fg.5  = 128,  0,16,16, ; water right-v dummy
+fg.6  = 144,  0,16,16, ; water right-v dummy
+fg.7  = 160,  0,16,16, ; water left-v dummy
+fg.8  = 176,  0,16,16, ; water left-v dummy
+fg.9  = 192,  0,16,16, ; water right-corner dummy
+fg.10 = 208,  0,16,16, ; water left-corner dummy
+
+fg.100 =   0,  0,16,16, ; water right-h
+fg.101 =   0, 24,16,16, ; water right-h
+fg.102 =   0, 48,16,16, ; water right-h
+fg.103 =   0, 72,16,16, ; water right-h
+fg.104 =   0, 96,16,16, ; water right-h
+fg.105 =   0,120,16,16, ; water right-h
+fg.106 =   0,144,16,16, ; water right-h
+fg.107 =   0,168,16,16, ; water right-h
+fg.108 =   0,192,16,16, ; water right-h
+
+fg.110 =  16,  0,16,16, ; water right-h
+fg.111 =  16, 24,16,16, ; water right-h
+fg.112 =  16, 48,16,16, ; water right-h
+fg.113 =  16, 72,16,16, ; water right-h
+fg.114 =  16, 96,16,16, ; water right-h
+fg.115 =  16,120,16,16, ; water right-h
+fg.116 =  16,144,16,16, ; water right-h
+fg.117 =  16,168,16,16, ; water right-h
+fg.118 =  16,192,16,16, ; water right-h
+
+fg.120 = 304,  0,16,16, ; water left-h
+fg.121 = 304, 24,16,16, ; water left-h
+fg.122 = 304, 48,16,16, ; water left-h
+fg.123 = 304, 72,16,16, ; water left-h
+fg.124 = 304, 96,16,16, ; water left-h
+fg.125 = 304,120,16,16, ; water left-h
+fg.126 = 304,144,16,16, ; water left-h
+fg.127 = 304,168,16,16, ; water left-h
+fg.128 = 304,192,16,16, ; water left-h
+
+fg.130 = 320,  0,16,16, ; water left-h
+fg.131 = 320, 24,16,16, ; water left-h
+fg.132 = 320, 48,16,16, ; water left-h
+fg.133 = 320, 72,16,16, ; water left-h
+fg.134 = 320, 96,16,16, ; water left-h
+fg.135 = 320,120,16,16, ; water left-h
+fg.136 = 320,144,16,16, ; water left-h
+fg.137 = 320,168,16,16, ; water left-h
+fg.138 = 320,192,16,16, ; water left-h
+
+fg.140 =  64, 32,16,16, ; water right-v
+fg.141 =  88, 32,16,16, ; water right-v
+fg.142 = 112, 32,16,16, ; water right-v
+fg.143 = 136, 32,16,16, ; water right-v
+fg.144 = 160, 32,16,16, ; water right-v
+fg.145 = 184, 32,16,16, ; water right-v
+fg.146 = 208, 32,16,16, ; water right-v
+fg.147 = 232, 32,16,16, ; water right-v
+fg.148 = 256, 32,16,16, ; water right-v
+
+fg.150 =  64, 48,16,16, ; water right-v
+fg.151 =  88, 48,16,16, ; water right-v
+fg.152 = 112, 48,16,16, ; water right-v
+fg.153 = 136, 48,16,16, ; water right-v
+fg.154 = 160, 48,16,16, ; water right-v
+fg.155 = 184, 48,16,16, ; water right-v
+fg.156 = 208, 48,16,16, ; water right-v
+fg.157 = 232, 48,16,16, ; water right-v
+fg.158 = 256, 48,16,16, ; water right-v
+
+fg.160 = 256, 80,16,16, ; water left-v
+fg.161 = 232, 80,16,16, ; water left-v
+fg.162 = 208, 80,16,16, ; water left-v
+fg.163 = 184, 80,16,16, ; water left-v
+fg.164 = 160, 80,16,16, ; water left-v
+fg.165 = 136, 80,16,16, ; water left-v
+fg.166 = 112, 80,16,16, ; water left-v
+fg.167 =  88, 80,16,16, ; water left-v
+fg.168 =  64, 80,16,16, ; water left-v
+
+fg.170 = 256, 96,16,16, ; water left-v
+fg.171 = 232, 96,16,16, ; water left-v
+fg.172 = 208, 96,16,16, ; water left-v
+fg.173 = 184, 96,16,16, ; water left-v
+fg.174 = 160, 96,16,16, ; water left-v
+fg.175 = 136, 96,16,16, ; water left-v
+fg.176 = 112, 96,16,16, ; water left-v
+fg.177 =  88, 96,16,16, ; water left-v
+fg.178 =  64, 96,16,16, ; water left-v
+
+fg.180 =  32,  0,16,16, ; water right-c
+fg.181 =  32, 24,16,16, ; water right-c
+fg.182 =  32, 48,16,16, ; water right-c
+fg.183 =  32, 72,16,16, ; water right-c
+fg.184 =  32, 96,16,16, ; water right-c
+fg.185 =  32,120,16,16, ; water right-c
+fg.186 =  32,144,16,16, ; water right-c
+fg.187 =  32,168,16,16, ; water right-c
+fg.188 =  32,192,16,16, ; water right-c
+
+fg.190 = 288,  0,16,16, ; water left-c
+fg.191 = 288, 24,16,16, ; water left-c
+fg.192 = 288, 48,16,16, ; water left-c
+fg.193 = 288, 72,16,16, ; water left-c
+fg.194 = 288, 96,16,16, ; water left-c
+fg.195 = 288,120,16,16, ; water left-c
+fg.196 = 288,144,16,16, ; water left-c
+fg.197 = 288,168,16,16, ; water left-c
+fg.198 = 288,192,16,16, ; water left-c

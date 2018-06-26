@@ -1,0 +1,23 @@
+; bat
+; frame.id = base_x, base_y,
+; anim.id  = frame-time,[...]
+; clsn.id  = x1,y1,x2,y2,
+;
+; # time > 99 = infinite/locked
+; # x1,y1,x2,y2 are reletive of base_x,base_y
+; clsn = collusion box
+
+; declare maximum space to allocate (optional)
+total = 4
+
+;;;;;;;;;;;;;
+; fly , 31x31 , 16x16+8+8
+frame.0 = 16,16, ; 0-0
+frame.1 = 16,16, ; 0-1
+frame.2 = 16,16, ; 0-2
+frame.3 = 16,16, ; 0-3
+anim.0 = 0-4,1-4,2-4,3-4,
+clsn.0 = -8,-8,8,8,
+
+
+
