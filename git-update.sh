@@ -18,6 +18,7 @@ case "$1" in
 		git pull origin master
 		;;
 	"-force")
+		[[ "$2" == "i_really_want_to_do_this" ]] || exit
 		echo "git push --force $git : master"
 		git push --force origin master
 		;;

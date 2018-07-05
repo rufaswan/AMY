@@ -45,21 +45,25 @@ class EntityData {
 			m_is_wall_right = ! can_move_hor( 1);
 		}
 
-		void move( int x, int y, int dir )
+		bool move( int x, int y, int dir )
 		{
 			m_dir = dir;
 			if ( dir == 'l' )   m_flip_left = false;
 			if ( dir == 'r' )   m_flip_left = true;
 			if ( dir == 'u' )   m_flip_up   = false;
 			if ( dir == 'd' )   m_flip_up   = true;
-			move( x, y );
+			return move( x, y );
 		}
 
-		void move( int x, int y )
+		bool move( int x, int y )
 		{
 			m_pos_x += x;
 			m_pos_y += y;
 			update_rect();
+
+			if ( x != 0 )  return true;
+			if ( y != 0 )  return true;
+			return false;
 		}
 
 		bool can_move( int x1, int y1 )
@@ -219,7 +223,7 @@ class EntityData {
 			return m_anim.m_is_done;
 		}
 
-		void up( int mv, int dir = 'u' )
+		bool up( int mv, int dir = 'u' )
 		{
 			while ( mv > 0 )
 			{
@@ -227,9 +231,10 @@ class EntityData {
 					return move(0, mv*-1, dir);
 				mv--;
 			} // while mv
+			return false;
 		}
 
-		void down( int mv, int dir = 'd' )
+		bool down( int mv, int dir = 'd' )
 		{
 			while ( mv > 0 )
 			{
@@ -237,9 +242,10 @@ class EntityData {
 					return move(0, mv*1, dir);
 				mv--;
 			} // while mv
+			return false;
 		}
 
-		void left( int mv, int dir = 'l' )
+		bool left( int mv, int dir = 'l' )
 		{
 			while ( mv > 0 )
 			{
@@ -247,9 +253,10 @@ class EntityData {
 					return move(mv*-1, 0, dir);
 				mv--;
 			} // while mv
+			return false;
 		}
 
-		void right( int mv, int dir = 'r' )
+		bool right( int mv, int dir = 'r' )
 		{
 			while ( mv > 0 )
 			{
@@ -257,6 +264,7 @@ class EntityData {
 					return move(mv*1, 0, dir);
 				mv--;
 			} // while mv
+			return false;
 		}
 
 		void set( int x, int y, int dir = 'd' )

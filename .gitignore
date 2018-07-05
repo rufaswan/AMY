@@ -35,9 +35,9 @@
 !*.conf
 !*.md
 !*.def
+!*.lvl
 !*.cfg
 
-!*.lvl
 !*.inc
 !*.ttf
 !*.png

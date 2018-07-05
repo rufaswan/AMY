@@ -9,18 +9,18 @@
 #include "class_animdata.hpp"
 #include "class_entitytools.hpp"
 
-sf::Font     SFFONT;
-sf::Color    BGCOLOR;
-int  CAM_ID;
-int  ANIM_WATER;
-int  SCRLOCK;
-int  BRIGHT;
-int  BRIGHT_ADJ;
+sf::Font     G_SFFONT;
+sf::Color    G_BGCOLOR;
+int  G_CAM_ID;
+int  G_ANIM_WATER;
+int  G_SCRLOCK;
+int  G_BRIGHT;
+int  G_BRIGHT_ADJ;
 
-EntityList  PLAYER_BULLET;
-EntityList  ENEMY_BULLET;
-EntityList  ENEMY_LIST;
-EntityList  EFFECTS;
+EntityList  G_PLAYER_BULLET;
+EntityList  G_ENEMY_BULLET;
+EntityList  G_ENEMY_LIST;
+EntityList  G_EFFECTS;
 
 //////////////////////////////////////////////////
 #include "cx/cpp_misc.hpp"
@@ -45,11 +45,11 @@ class Ball : public EntityData {
 			if ( ! is_intersect( entity ) )
 				return;
 
-			EFFECTS.push_back( new Explode );
-			EFFECTS.back()->m_id = -1;
-			EFFECTS.back()->m_ref_map  = m_ref_map;
-			EFFECTS.back()->m_ref_tile = m_ref_tile;
-			EFFECTS.back()->set( m_pos_x, m_pos_y - 16, 'l' );
+			G_EFFECTS.push_back( new Explode );
+			G_EFFECTS.back()->m_id = -1;
+			G_EFFECTS.back()->m_ref_map  = m_ref_map;
+			G_EFFECTS.back()->m_ref_tile = m_ref_tile;
+			G_EFFECTS.back()->set( m_pos_x, m_pos_y - 16, 'l' );
 			m_is_dead = true;
 		}
 		void ai_update()
@@ -72,12 +72,12 @@ int tile_event( LevelMap &map, int pos_x, int pos_y )
 	int tid = map.m_map_col[ mid ];
 	if ( tid > 0 )
 	{
-		if ( tid == 4 )   { SCRLOCK = 4; } // vlock
-		if ( tid == 5 )   { SCRLOCK = 5; } // hlock
-		if ( tid == 6 )   { SCRLOCK = 6; } // room lock
+		if ( tid == 4 )   { G_SCRLOCK = 4; } // vlock
+		if ( tid == 5 )   { G_SCRLOCK = 5; } // hlock
+		if ( tid == 6 )   { G_SCRLOCK = 6; } // room lock
 	}
 
-	switch ( SCRLOCK )
+	switch ( G_SCRLOCK )
 	{
 		case 4:
 			map.cam_lock_x( pos_x );
@@ -103,7 +103,7 @@ void gen_enlist( LevelMap &map, TileData &tile )
 	while ( n > 0 )
 	{
 		n--;
-		if ( has_enlist_id( map.m_obj_list[n].id, ENEMY_LIST) )
+		if ( has_enlist_id( map.m_obj_list[n].id, G_ENEMY_LIST) )
 		{
 			map.m_obj_list.erase( map.m_obj_list.begin() + n );
 		}
@@ -113,11 +113,11 @@ void gen_enlist( LevelMap &map, TileData &tile )
 			{
 				case 4:
 					printf("new Ball x %d y %d\n", map.m_obj_list[n].x + 32, map.m_obj_list[n].y + 55 );
-					ENEMY_LIST.push_back( new Ball );
-					ENEMY_LIST.back()->m_id = map.m_obj_list[n].id;
-					ENEMY_LIST.back()->m_ref_map  = &map;
-					ENEMY_LIST.back()->m_ref_tile = &tile;
-					ENEMY_LIST.back()->set( map.m_obj_list[n].x + 32, map.m_obj_list[n].y + 55, 'l' );
+					G_ENEMY_LIST.push_back( new Ball );
+					G_ENEMY_LIST.back()->m_id = map.m_obj_list[n].id;
+					G_ENEMY_LIST.back()->m_ref_map  = &map;
+					G_ENEMY_LIST.back()->m_ref_tile = &tile;
+					G_ENEMY_LIST.back()->set( map.m_obj_list[n].x + 32, map.m_obj_list[n].y + 55, 'l' );
 					break;
 			}
 		}
@@ -126,38 +126,38 @@ void gen_enlist( LevelMap &map, TileData &tile )
 //////////////////////////////////////////////////
 void clear_all()
 {
-	clear_entities( PLAYER_BULLET, true );
-	clear_entities( ENEMY_BULLET,  true );
-	clear_entities( ENEMY_LIST,    true );
-	clear_entities( EFFECTS,       true );
+	clear_entities( G_PLAYER_BULLET, true );
+	clear_entities( G_ENEMY_BULLET,  true );
+	clear_entities( G_ENEMY_LIST,    true );
+	clear_entities( G_EFFECTS,       true );
 }
 
 void draw_bg( gamesys* sys, LevelMap &map )
 {
 	map.change_map(1); // bg
-	map.update_map( BRIGHT );
+	map.update_map( G_BRIGHT );
 	sys->m_win.draw(map);
 
-	BRIGHT += BRIGHT_ADJ;
-	if ( BRIGHT <   0 )   { BRIGHT =   0; BRIGHT_ADJ *= -1; }
-	if ( BRIGHT > 255 )   { BRIGHT = 255; BRIGHT_ADJ *= -1; }
+	G_BRIGHT += G_BRIGHT_ADJ;
+	if ( G_BRIGHT <   0 )   { G_BRIGHT =   0; G_BRIGHT_ADJ *= -1; }
+	if ( G_BRIGHT > 255 )   { G_BRIGHT = 255; G_BRIGHT_ADJ *= -1; }
 }
 
 void draw_fg( gamesys* sys, LevelMap &map )
 {
 	map.change_map(3); // fg
-		ANIM_WATER = (ANIM_WATER + 1) % 9;
-		map.anim_fg(  1, 100 + ANIM_WATER );
-		map.anim_fg(  2, 110 + ANIM_WATER );
-		map.anim_fg(  3, 120 + ANIM_WATER );
-		map.anim_fg(  4, 130 + ANIM_WATER );
-		map.anim_fg(  5, 140 + ANIM_WATER );
-		map.anim_fg(  6, 150 + ANIM_WATER );
-		map.anim_fg(  7, 160 + ANIM_WATER );
-		map.anim_fg(  8, 170 + ANIM_WATER );
-		map.anim_fg(  9, 180 + ANIM_WATER );
-		map.anim_fg( 10, 190 + ANIM_WATER );
-	map.update_map( BRIGHT );
+		G_ANIM_WATER = (G_ANIM_WATER + 1) % 9;
+		map.anim_fg(  1, 100 + G_ANIM_WATER );
+		map.anim_fg(  2, 110 + G_ANIM_WATER );
+		map.anim_fg(  3, 120 + G_ANIM_WATER );
+		map.anim_fg(  4, 130 + G_ANIM_WATER );
+		map.anim_fg(  5, 140 + G_ANIM_WATER );
+		map.anim_fg(  6, 150 + G_ANIM_WATER );
+		map.anim_fg(  7, 160 + G_ANIM_WATER );
+		map.anim_fg(  8, 170 + G_ANIM_WATER );
+		map.anim_fg(  9, 180 + G_ANIM_WATER );
+		map.anim_fg( 10, 190 + G_ANIM_WATER );
+	map.update_map( G_BRIGHT );
 	sys->m_win.draw(map);
 }
 
@@ -184,7 +184,7 @@ void ready_teleport( gamesys* sys, LevelMap &map, RockX &rock )
 		sys->input_handler();
 		sys->event_handler();
 
-		sys->m_win.clear( BGCOLOR );
+		sys->m_win.clear( G_BGCOLOR );
 
 		draw_bg( sys, map );
 		draw_fg( sys, map );
@@ -204,7 +204,7 @@ void ready_teleport( gamesys* sys, LevelMap &map, RockX &rock )
 		sys->event_handler();
 		rock.act_tele_in();
 
-		sys->m_win.clear( BGCOLOR );
+		sys->m_win.clear( G_BGCOLOR );
 
 		rock.draw( sys );
 
@@ -220,7 +220,7 @@ void game_update( gamesys* sys, LevelMap &map, TileData &tile, RockX &rock )
 	ready_teleport( sys, map, rock );
 
 	int n;
-	sys->m_win.clear( BGCOLOR );
+	sys->m_win.clear( G_BGCOLOR );
 
 	int tid = tile_event( map, rock.m_pos_x, rock.m_pos_y );
 		if ( tid == 2 )   rock.m_is_dead = true;
@@ -228,35 +228,35 @@ void game_update( gamesys* sys, LevelMap &map, TileData &tile, RockX &rock )
 	rock.pl_update( sys );
 	rock.draw( sys );
 
-	for ( n=0; n < PLAYER_BULLET.size(); n++ )
+	for ( n=0; n < G_PLAYER_BULLET.size(); n++ )
 	{
-		PLAYER_BULLET[n]->ai_update();
-		PLAYER_BULLET[n]->draw( sys );
+		G_PLAYER_BULLET[n]->ai_update();
+		G_PLAYER_BULLET[n]->draw( sys );
 	}
 
 	int cam_id = map.get_cam_id();
-	if ( CAM_ID != cam_id )
+	if ( G_CAM_ID != cam_id )
 	{
 		map.get_map_obj();
 		gen_enlist( map, tile );
-		CAM_ID = cam_id;
+		G_CAM_ID = cam_id;
 	}
 
-	for ( n=0; n < ENEMY_LIST.size(); n++ )
+	for ( n=0; n < G_ENEMY_LIST.size(); n++ )
 	{
-		ENEMY_LIST[n]->ai_update();
-		ENEMY_LIST[n]->draw( sys );
+		G_ENEMY_LIST[n]->ai_update();
+		G_ENEMY_LIST[n]->draw( sys );
 	}
-	loop_entity( ENEMY_LIST, PLAYER_BULLET );
+	loop_entity( G_ENEMY_LIST, G_PLAYER_BULLET );
 
-	for ( n=0; n < EFFECTS.size(); n++ )
+	for ( n=0; n < G_EFFECTS.size(); n++ )
 	{
-		EFFECTS[n]->ai_update();
-		EFFECTS[n]->draw( sys );
+		G_EFFECTS[n]->ai_update();
+		G_EFFECTS[n]->draw( sys );
 	}
 
-	clear_entities( PLAYER_BULLET );
-	clear_entities( EFFECTS );
+	clear_entities( G_PLAYER_BULLET );
+	clear_entities( G_EFFECTS );
 
 	draw_bg( sys, map );
 	draw_fg( sys, map );
@@ -286,13 +286,13 @@ int main(int argc, char* argv[])
 		rock.m_is_dead = true;
 		//rock.set( sys->m_half_w , 0 , 'r' );
 
-	SFFONT.loadFromMemory( RES_VERAMONO_TTF, RES_VERAMONO_TTF_SIZE );
-	BGCOLOR = sf::Color(16,41,82);
-	CAM_ID = -1;
-	ANIM_WATER = 0;
-	SCRLOCK = 0;
-	BRIGHT     = 255;
-	BRIGHT_ADJ = -4;
+	G_SFFONT.loadFromMemory( RES_VERAMONO_TTF, RES_VERAMONO_TTF_SIZE );
+	G_BGCOLOR = sf::Color(16,41,82);
+	G_CAM_ID = -1;
+	G_ANIM_WATER = 0;
+	G_SCRLOCK = 0;
+	G_BRIGHT     = 255;
+	G_BRIGHT_ADJ = -4;
 
 	while( sys->m_win.isOpen() )
 	{
@@ -304,8 +304,8 @@ int main(int argc, char* argv[])
 			game_update( sys, map, tile, rock );
 		}
 
-		draw_player_pos( sys, SFFONT, &rock );
-		//draw_fps_no( sys, SFFONT );
+		draw_player_pos( sys, G_SFFONT, &rock );
+		//draw_fps_no( sys, G_SFFONT );
 		sys->m_win.display();
 		sys->m_fps++;
 	}

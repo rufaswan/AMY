@@ -5,10 +5,10 @@
 #include "class_levelmap.hpp"
 #include "res-ttf.inc"
 
-sf::Font      SFFONT;
-sf::Texture   EDMENU;
+sf::Font      G_SFFONT;
+sf::Texture   G_EDMENU;
 
-int g_selected;
+int G_SELECTED;
 
 
 void draw_cam_pos( gamesys* sys, sf::Font &font, LevelMap &map )
@@ -42,7 +42,7 @@ void game_update( gamesys* sys, LevelMap &map )
 	sys->m_win.draw(map);
 
 	sf::Sprite spr;
-		spr.setTexture(EDMENU);
+		spr.setTexture(G_EDMENU);
 		sys->m_win.draw(spr);
 
 	map.update_tileset(288, 32, 128, 240);
@@ -63,8 +63,8 @@ void area_handler( int tx, int ty, LevelMap &map )
 			x1 = (map.m_cam_x + tx - 1) % map.m_map_w;
 			y1 = (map.m_cam_y + ty - 1) % map.m_map_h;
 			id = (y1 * map.m_map_w) + x1;
-			printf("MapArea : %d,%d [REL %d] , SEL %d\n", tx-1, ty-1, id, g_selected);
-			map.set_map_selected( id, g_selected );
+			printf("MapArea : %d,%d [REL %d] , SEL %d\n", tx-1, ty-1, id, G_SELECTED);
+			map.set_map_selected( id, G_SELECTED );
 		}
 	}
 	// 128+288 x 240+32 = 8+18 , 15+2
@@ -75,8 +75,8 @@ void area_handler( int tx, int ty, LevelMap &map )
 			x1 = tx - 18;
 			y1 = ty - 2;
 			id = (y1 * 8) + x1;
-			printf("TileArea : %d,%d [REL %d] , SEL %d\n", tx-18, ty-2, id, g_selected);
-			g_selected = id;
+			printf("TileArea : %d,%d [REL %d] , SEL %d\n", tx-18, ty-2, id, G_SELECTED);
+			G_SELECTED = id;
 		}
 	}
 	// 64+288 x 16+272 = 4+18 , 1+17
@@ -110,13 +110,13 @@ int main(int argc, char* argv[])
 	gamesys* sys = new gamesys;
 		sys->create_win( 416, 288, argv[0] );
 
-	SFFONT.loadFromMemory( RES_VERAMONO_TTF, RES_VERAMONO_TTF_SIZE );
-	g_selected = 0;
+	G_SFFONT.loadFromMemory( RES_VERAMONO_TTF, RES_VERAMONO_TTF_SIZE );
+	G_SELECTED = 0;
 
 	//sf::Thread thd_fps( &fps_watch, op);
 		//thd_fps.launch();
 
-	EDMENU.loadFromFile("res-level-editor-16.png");
+	G_EDMENU.loadFromFile("res-level-editor-16.png");
 
 	if ( ! map.m_has_def )   return printf("FATAL : DEF file not found\n");
 
@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
 		{
 			mouse_handler( sys, map );
 			game_update( sys, map );
-			draw_cam_pos( sys, SFFONT, map );
+			draw_cam_pos( sys, G_SFFONT, map );
 		}
 
 		sys->m_win.display();

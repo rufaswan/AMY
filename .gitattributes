@@ -36,4 +36,5 @@
 *.conf   text
 *.md     text
 *.def    text
+*.lvl    text
 *.cfg    text

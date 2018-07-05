@@ -10,8 +10,8 @@
 #include "class_animdata.hpp"
 #include "class_entitytools.hpp"
 
-sf::Font     SFFONT;
-int  CAM_ID;
+sf::Font     G_SFFONT;
+int  G_CAM_ID;
 
 //////////////////////////////
 class Player : public EntityData {
@@ -188,11 +188,11 @@ void game_update( gamesys* sys, LevelMap &map, TileData &tile, Player &hero, Ent
 	hero.draw( sys, true );
 
 	int cam_id = map.get_cam_id();
-	if ( CAM_ID != cam_id )
+	if ( G_CAM_ID != cam_id )
 	{
 		map.get_map_obj();
 		gen_enlist( map, tile, EnemyList );
-		CAM_ID = cam_id;
+		G_CAM_ID = cam_id;
 	}
 
 	int n;
@@ -230,8 +230,8 @@ int main(int argc, char* argv[])
 	EntityList EnemyList;
 		EnemyList.reserve(32);
 
-	SFFONT.loadFromMemory( RES_VERAMONO_TTF, RES_VERAMONO_TTF_SIZE );
-	CAM_ID = -1;
+	G_SFFONT.loadFromMemory( RES_VERAMONO_TTF, RES_VERAMONO_TTF_SIZE );
+	G_CAM_ID = -1;
 
 	//sf::Thread thd_fps( &fps_watch, sys );
 		//thd_fps.launch();
@@ -246,8 +246,8 @@ int main(int argc, char* argv[])
 			game_update( sys, map, tile, hero, EnemyList );
 		}
 
-		//draw_player_pos( sys, SFFONT, &hero );
-		//draw_fps_no( sys, SFFONT );
+		//draw_player_pos( sys, G_SFFONT, &hero );
+		//draw_fps_no( sys, G_SFFONT );
 		sys->m_win.display();
 		sys->m_fps++;
 	}
