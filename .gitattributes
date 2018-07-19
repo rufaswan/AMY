@@ -11,16 +11,12 @@
 *.h      text diff=cpp
 *.cpp    text diff=cpp
 *.hpp    text diff=cpp
-*.cs     text diff=csharp
 *.php    text diff=php
-*.py     text diff=python
+*.py2    text diff=python
+*.py3    text diff=python
 *.css    text diff=css
 *.html   text diff=html
 *.xml    text diff=html
-*.rb     text diff=ruby
-*.pl     text diff=perl
-*.go     text diff=golang
-*.java   text diff=java
 
 # os-specific
 *.sh     text eol=lf

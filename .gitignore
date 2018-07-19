@@ -12,16 +12,12 @@
 !*.h
 !*.cpp
 !*.hpp
-!*.cs
 !*.php
-!*.py
+!*.py2
+!*.py3
 !*.css
 !*.html
 !*.xml
-!*.rb
-!*.pl
-!*.go
-!*.java
 
 !*.sh
 !*.bat
