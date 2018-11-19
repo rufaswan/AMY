@@ -49,7 +49,7 @@ namespace rfs {
 	int strrpos( std::string &str, char find )
 	{
 		int i = 0;
-		int pos;
+		int pos = 0;
 		while ( i < str.size() )
 		{
 			if ( str[i] == find )
@@ -68,6 +68,21 @@ namespace rfs {
 				str[i] = replace;
 			i++;
 		}
+	}
+
+	void dirname( std::string &dir, std::string &path )
+	{
+		dir = "";
+		int sep = rfs::strrpos( path, '/' );
+		int i = 0;
+		while ( i < sep )
+		{
+			dir += path[i];
+			i++;
+		}
+
+		if ( "" == dir )
+			dir = ".";
 	}
 
 	void explode( std::string &str, char sep, vecstr &array )

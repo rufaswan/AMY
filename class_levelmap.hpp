@@ -27,6 +27,7 @@ class LevelMap : public sf::Drawable, public sf::Transformable
 {
 	private:
 		std::string  m_class_name;
+		std::string  m_rel_path;
 		sf::VertexArray   m_vertices;
 		arrver  m_ver_col;
 		arrver  m_ver_bg;
@@ -178,6 +179,30 @@ class LevelMap : public sf::Drawable, public sf::Transformable
 			arr[id] = ver;
 		}
 
+		void set_texture( sf::Texture &tex, std::string &val )
+		{
+			std::string  path = "";
+			if ( rfs::strpos(val, '/') )
+				path = val;
+			else
+				path = m_rel_path + '/' + val;
+
+			printf("%s.set_texture( %s )\n", m_class_name.c_str(), path.c_str() );
+			tex.loadFromFile(path);
+		}
+
+		void include_def( std::string &val )
+		{
+			std::string  path = "";
+			if ( rfs::strpos(val, '/') )
+				path = val;
+			else
+				path = m_rel_path + '/' + val;
+
+			printf("%s.include_def( %s )\n", m_class_name.c_str(), path.c_str() );
+			load_def(path);
+		}
+
 		void set_keyval( std::string &key, std::string &val )
 		{
 			printf("%s.set_keyval( %s , %s )\n", m_class_name.c_str(), key.c_str(), val.c_str() );
@@ -186,10 +211,11 @@ class LevelMap : public sf::Drawable, public sf::Transformable
 			if ( key == "map.w" )   { m_map_w = strtol( val.c_str(), NULL, 0 ); return; }
 			if ( key == "map.h" )   { m_map_h = strtol( val.c_str(), NULL, 0 ); return; }
 
-			if ( key == "col.img" )   { m_img_col.loadFromFile(val); return; }
-			if ( key == "bg.img"  )   { m_img_bg.loadFromFile(val);  return; }
-			if ( key == "obj.img" )   { m_img_obj.loadFromFile(val); return; }
-			if ( key == "fg.img"  )   { m_img_fg.loadFromFile(val);  return; }
+			if ( key == "include" )   { return include_def(val); }
+			if ( key == "col.img" )   { return set_texture(m_img_col, val); }
+			if ( key == "bg.img"  )   { return set_texture(m_img_bg,  val); }
+			if ( key == "obj.img" )   { return set_texture(m_img_obj, val); }
+			if ( key == "fg.img"  )   { return set_texture(m_img_fg,  val); }
 
 			vecstr  vs;
 				rfs::split( key, '.', vs );
@@ -676,6 +702,7 @@ class LevelMap : public sf::Drawable, public sf::Transformable
 		void load_file( std::string &prefix )
 		{
 			printf("%s.load_file( %s )\n", m_class_name.c_str(), prefix.c_str() );
+			rfs::dirname( m_rel_path, prefix );
 			std::string  def = prefix + ".def";
 				load_def(def);
 			std::string  lvl = prefix + ".lvl";
@@ -707,6 +734,7 @@ class LevelMap : public sf::Drawable, public sf::Transformable
 			m_pad_x = 0;
 			m_pad_y = 0;
 			m_cur_map = 0;
+			m_rel_path = "";
 
 			m_ver_col.reserve( 0xff );
 			m_ver_bg.reserve( 0xff );

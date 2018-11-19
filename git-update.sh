@@ -1,21 +1,25 @@
 #!/bin/bash
 
-git="git@github.com:rufaswan/CX.git"
-ups=""
+git=$(cat repo.git)
+ups=$(cat repo.fork)
+[ "$git" ] || exit
 
 msg="
 please type a comment to commit and push
-  type -retry to retry git push [no commit]
-  type -pull  to do a git pull
-  type -fetch to sync your forked repo
-  type -force to overwrite the repo
+  type -retry  to retry git push [no commit]
+  type -pull   to do a git pull
+  type -update to update your forked repo
+  type -force  to overwrite the repo
+  type -last   to view the last 5 commits
 "
 [ $# = 0 ] && { echo "$msg"; exit; }
 
 git remote rm  origin
 git remote add origin "$git"
-git remote rm  upstream
-git remote add upstream "$ups"
+if [ "$ups" ]; then
+	git remote rm  upstream
+	git remote add upstream "$ups"
+fi
 
 case "$1" in
 	"-pull")
@@ -37,8 +41,6 @@ case "$1" in
 			git fetch upstream
 			git checkout master
 			git merge upstream/master
-		else
-			echo "No upstream defined. Nothing to fetch."
 		fi
 		;;
 	"-last")

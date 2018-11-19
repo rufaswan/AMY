@@ -4,6 +4,7 @@
 #include "zsf-common.hpp"
 #include "class_levelmap.hpp"
 #include "res-ttf.inc"
+#include "res-level-editor-16.inc"
 
 sf::Font      G_SFFONT;
 sf::Texture   G_EDMENU;
@@ -116,7 +117,7 @@ int main(int argc, char* argv[])
 	//sf::Thread thd_fps( &fps_watch, op);
 		//thd_fps.launch();
 
-	G_EDMENU.loadFromFile("res-level-editor-16.png");
+	G_EDMENU.loadFromMemory( RES_LEVEL_EDITOR_16_PNG, RES_LEVEL_EDITOR_16_PNG_SIZE );
 
 	if ( ! map.m_has_def )   return printf("FATAL : DEF file not found\n");
 

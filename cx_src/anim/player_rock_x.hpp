@@ -232,7 +232,7 @@ class RockX : public EntityData {
 		RockX()
 		{
 			m_class_name = "RockX";
-			m_anim.load_def("cx/000_rock/rock.def");
+			m_anim.load_def("cx_data/anim/player_rock_x/rock.def");
 			m_vel_x =  4;
 			m_vel_y = 12;
 			m_jumped   = true;
